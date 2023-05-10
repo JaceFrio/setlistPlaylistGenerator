@@ -19,6 +19,18 @@ body {
 .boldText {
   font-weight: 500;
 }
+nav > div {
+  background-color: #222326;
+}
+nav {
+  background-color: #222326;
+}
+body > nav > div > span {
+  color: white !important;
+}
+.navbar-text {
+  color: white;
+}
 button {
   font-family: 'Gotham', sans-serif;
   font-weight: 500;
@@ -73,7 +85,7 @@ button:active {
 }
 .subFooter {
   height: 60px;
-  padding: 0px 64px;
+  padding: 10px 64px;
 }
 .subFooter > p {
   float: right;
@@ -81,17 +93,17 @@ button:active {
   font-size: 12px;
 }
 a:link {
-  color: #1DB954;
+  color: #1DB954 !important;
 }
 
 a:visited {
-  color: #1DB954;
+  color: #1DB954 !important;
 }
 
 a:hover {
-  color: #25db65;
+  color: #25db65 !important;
 }
 
 a:active {
-  color: #1bad4e;
+  color: #1bad4e !important;
 }

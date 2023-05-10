@@ -8,7 +8,6 @@
   <link href="../bootstrap.css " rel="stylesheet">
   <link rel="stylesheet" href="./index.css">
   <link crossorigin="anonymous" href="https://fonts.cdnfonts.com/css/gotham" rel="stylesheet">
-  <script src="../jquery-3.6.4.min.js"></script>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg">
@@ -17,13 +16,13 @@
       <div class="collapse navbar-collapse" id="navbarText">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="./index.html" style="color: #25db65 !important;">Home</a>
+            <a class="nav-link" href="./index.html">Home</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="./generatePlaylist.html">Generate a Playlist</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="./about.html">About</a>
+            <a class="nav-link" aria-current="page" href="./about.html" style="color: #25db65 !important;">About</a>
           </li>
         </ul>
         <span class="navbar-text">
@@ -33,16 +32,9 @@
     </div>
   </nav>
   <div class="header">
-    <p class="title">Setlist Playlist Generator</p>
+    <p class="title">About</p>
   </div>
   <div class="mainContent">
-    <p>Welcome to <span class="boldText">Setlist Playlist Generator</span>! We generate <span class="boldText"> Spotify </span> playlists from existing setlist data on <a class="boldText" href="https://www.setlist.fm/" target="_blank">setlist.fm</a>.</p>
-    <div class="preview">
-      <img class="exampleImg" src="./assets/setlistExample.PNG" alt="setlist">
-      <p class="rightArrows">&#187;</p>
-      <img class="exampleImg" src="./assets/playlistExample.PNG" alt="">
-    </div>
-    <button class="generatePlaylistBtn"> GENERATE A PLAYLIST </button>
   </div>
   <div class="footer"></div>
   <div class="subFooter">
@@ -50,5 +42,6 @@
   </div>
   <script src="./index.js"></script>
   <script src="../bootstrap.js"></script>
+  <script src="../jquery-3.6.4.min.js"></script>
 </body>
 </html>
