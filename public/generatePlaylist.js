@@ -99,6 +99,8 @@ async function getProfile() {
   const data = await response.json();
 }
 
+//FIXME: Going to use a different code example
+
 $(document).ready(() => {
   $('.spotifyLoginBtn').click( async () => {
     let res = await LogInToSpotify()
