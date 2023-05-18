@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Setlist Playlist Generator</title>
-  <link href="../bootstrap.css " rel="stylesheet">
+  <link href="./bootstrap.css " rel="stylesheet">
   <link rel="stylesheet" href="./index.css">
   <link crossorigin="anonymous" href="https://fonts.cdnfonts.com/css/gotham" rel="stylesheet">
 </head>
@@ -35,14 +35,87 @@
     <p class="title">Generate a Playlist</p>
   </div>
   <div class="mainContent">
-    
+    <p> Log in to your Spotify account and fill out your concert's info and then select "Generate Playlist" to get your playlist. 
+      If the date isn't exactly correct we'll grab their latest concert that was held in that city in the chosen year. 
+      Make sure to spell the artist's name the same way that it appears on spotify! </p>
+    <div class="mb-3 ">
+      <button id="spotifyLoginBtn" type="button" class="spotifyLoginBtn">LOG IN TO SPOTIFY</button>
+    </div>
+    <div class="card-body">
+      <form id="setlistInfo">
+        <label for="monthInput" class="form-label">Month</label>
+        <select class="form-select mb-3" id="monthInput" name="monthInput">
+          <option value="01" selected>January</option>
+          <option value="02">February</option>
+          <option value="03">March</option>
+          <option value="04">April</option>
+          <option value="05">May</option>
+          <option value="06">June</option>
+          <option value="07">July</option>
+          <option value="08">August</option>
+          <option value="09">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
+        </select>
+        <label for="dayInput" class="form-label">Day</label>
+        <select class="form-select mb-3" id="dayInput" name="dayInput">
+          <option value="01" selected>1</option>
+          <option value="02">2</option>
+          <option value="03">3</option>
+          <option value="04">4</option>
+          <option value="05">5</option>
+          <option value="06">6</option>
+          <option value="07">7</option>
+          <option value="08">8</option>
+          <option value="09">9</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+          <option value="15">15</option>
+          <option value="16">16</option>
+          <option value="17">17</option>
+          <option value="18">18</option>
+          <option value="19">19</option>
+          <option value="20">20</option>
+          <option value="21">21</option>
+          <option value="22">22</option>
+          <option value="23">23</option>
+          <option value="24">24</option>
+          <option value="25">25</option>
+          <option value="26">26</option>
+          <option value="27">27</option>
+          <option value="28">28</option>
+          <option value="29">29</option>
+          <option value="30">30</option>
+          <option value="31">31</option>
+        </select>
+        <div class="mb-3">
+          <label for="yearInput" class="form-label">Year</label>
+          <input type="number" class="form-control" id="yearInput" name="yearInput" placeholder="2023" minlength="4" maxlength="4">
+        </div>
+        <div class="mb-3">
+          <label for="cityInput" class="form-label">City</label>
+          <input type="text" class="form-control" id="cityInput" name="cityInput" placeholder="Salt Lake City">
+        </div>
+        <div class="mb-3">
+          <label for="artistInput" class="form-label">Artist</label>
+          <input type="text" class="form-control" id="artistInput" name="artistInput" placeholder="Taylor Swift">
+        </div>
+        <div class="mb-3 ">
+          <button id="setlistInputBtn" type="submit" class="submitSetlistInput">GENERATE PLAYLIST</button>
+        </div>
+      </form>
+    </div>
   </div>
   <div class="footer"></div>
   <div class="subFooter">
     <p> Jace B. Henwood </p>
   </div>
+  <script src="./jquery-3.6.4.min.js"></script>
   <script src="./generatePlaylist.js"></script>
-  <script src="../bootstrap.js"></script>
-  <script src="../jquery-3.6.4.min.js"></script>
+  <script src="./bootstrap.js"></script>
 </body>
 </html>

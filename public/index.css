@@ -106,7 +106,7 @@ nav > div > button:active {
   padding-top: 10px;
   font-size: 12px;
 }
-.generatePlaylistBtn {
+.spotifyLoginBtn, .submitSetlistInput, .generatePlaylistBtn {
   font-family: 'Gotham', sans-serif;
   font-weight: 500;
   font-size: 12px;
@@ -123,11 +123,20 @@ nav > div > button:active {
   display: block;
   margin-left: auto;
 }
-.generatePlaylistBtn:hover {
+.spotifyLoginBtn:hover, .submitSetlistInput:hover, .generatePlaylistBtn:hover {
   background-color: #25db65;
   transition: 0.2s;
 }
-.generatePlaylistBtn:active {
+.spotifyLoginBtn:active, .submitSetlistInput:active, .generatePlaylistBtn:active {
   background-color: #1bad4e;
   transition: 0.2s;
+}
+.submitSetlistInput {
+  margin-top: 50px;
+}
+input:hover {
+  cursor: text;
+}
+select:hover {
+  cursor: pointer;
 }
