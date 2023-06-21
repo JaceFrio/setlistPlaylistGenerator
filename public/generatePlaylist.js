@@ -1,111 +1,47 @@
-const PORT = 8080
-const clientId = '9aaae9b6a54447b9aa486b1f5e3122d9' // Replace with your client ID
-const redirectUri = 'http://localhost:8080/generatePlaylist.html'
-
-function generateRandomString(length) {
-	let text = ''
-	let possible =
-		'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-
-	for (let i = 0; i < length; i++) {
-		text += possible.charAt(Math.floor(Math.random() * possible.length))
-	}
-	return text
-}
-
-async function generateCodeChallenge(codeVerifier) {
-	function base64encode(string) {
-		return btoa(String.fromCharCode.apply(null, new Uint8Array(string)))
-			.replace(/\+/g, '-')
-			.replace(/\//g, '_')
-			.replace(/=+$/, '')
-	}
-
-	const encoder = new TextEncoder()
-	const data = encoder.encode(codeVerifier)
-	const digest = await window.crypto.subtle.digest('SHA-256', data)
-
-	return base64encode(digest)
-}
-
-async function LogInToSpotify() {
-	let codeVerifier = generateRandomString(128)
-
-  console.log('generating code challenge')
-	generateCodeChallenge(codeVerifier).then((codeChallenge) => {
-		let state = generateRandomString(16)
-		let scope = 'playlist-modify-public'
-
-		let args = new URLSearchParams({
-			response_type: 'code',
-			client_id: clientId,
-			scope: scope,
-			redirect_uri: redirectUri,
-			state: state,
-			code_challenge_method: 'S256',
-			code_challenge: codeChallenge,
-		})
-
-		window.open('https://accounts.spotify.com/authorize?' + args, 'Log In with Spotify', 'width=800, height=600')
-	})
-
-	const urlParams = new URLSearchParams(window.location.search)
-	let code = urlParams.get('code')
-
-  localStorage.setItem('code_verifier', codeVerifier)
-
-
-	let body = new URLSearchParams({
-		grant_type: 'authorization_code',
-		code: code,
-		redirect_uri: redirectUri,
-		client_id: clientId,
-		code_verifier: codeVerifier,
-	})
-
-	const response = fetch('https://accounts.spotify.com/api/token', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-		},
-		body: body,
-	})
-		.then((response) => {
-			if (!response.ok) {
-				throw new Error('HTTP status ' + response.status)
-			}
-			return response.json()
-		})
-		.then((data) => {
-			localStorage.setItem('access_token', data.access_token)
-      console.log('access token obtained: ' + data.access_token)
-		})
-		.catch((error) => {
-			console.error('Error:', error)
-		})
-
-	return response
-}
-
-async function getProfile() {
-  let accessToken = localStorage.getItem('access_token');
-
-  const response = await fetch('https://api.spotify.com/v1/me', {
-    headers: {
-      Authorization: 'Bearer ' + accessToken
-    }
-  });
-
-  const data = await response.json();
-}
-
-//FIXME: Going to use a different code example
-
 $(document).ready(() => {
+  //FIXME: Not working
+  function getHashParams() {
+    var hashParams = {}
+    var e, r = /([^&;=]+)=?([^&;]*)/g,
+        q = window.location.hash.substring(1)
+    while ( e = r.exec(q)) {
+        hashParams[e[1]] = decodeURIComponent(e[2])
+    }
+    return hashParams
+  }
+
+  var params = getHashParams()
+
+  var access_token = params.access_token || localStorage.getItem('access_token')
+
+  if (access_token) {
+    $.ajax({
+        url: 'https://api.spotify.com/v1/me',
+        headers: {
+          'Authorization': 'Bearer ' + access_token
+        },
+        success: function(response) {
+          console.log(response)
+          $('.welcomeUser').text(`Welcome ${response.display_name}!`)
+          localStorage.setItem('access_token', access_token)
+          $('#spotifyLoginBtn').text('LOG IN TO ANOTHER SPOTIFY ACCOUNT')
+        },
+        error: function(err) {
+          console.log(err)
+          console.log('need to set up refresh_token code')
+          //FIXME: Test later when playlist creation in implemented
+          // refresh the acceess token (bottom of page) - https://developer.spotify.com/documentation/web-api/tutorials/code-pkce-flow
+        }
+    })
+  } 
+  else {
+    $('#spotifyLoginBtn').text('LOG IN TO SPOTIFY ACCOUNT')
+  }
+
   $('.spotifyLoginBtn').click( async () => {
-    let res = await LogInToSpotify()
-    await getProfile()
+    window.location = 'http://localhost:8080/login'
   })
+
   $('#setlistInfo').submit((event) => {
     event.preventDefault()
     $('#setlistInputBtn').prop("disabled", true)
@@ -123,7 +59,7 @@ $(document).ready(() => {
     //TODO: Add validation and sanitization function before GET request
 
     $.ajax({
-      url: `http://localhost:${PORT}/setlistInfo/${date}/${city}/${artist}`,
+      url: `http://localhost:8080/setlistInfo/${date}/${city}/${artist}`,
       method: 'GET',
       success: (response) => {
         $('#setlistInputBtn').prop("disabled", false)

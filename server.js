@@ -2,17 +2,83 @@ const express = require('express')
 const cors = require('cors')
 const logger = require('morgan') 
 const fetch = require('node-fetch')
+const querystring = require('querystring')
+const request = require('request')
+const config = require('./config/config')
 const { Console } = require('console')
 const app = express()
-const PORT = 8080 
+const PORT = process.env.PORT || 8080
 
 app.use(logger('dev'))
 app.use(express.json())
+app.use(express.urlencoded({ extended: true}))
 app.use(cors())
 
-require('./routes/setlist.routes')(app)
+// const setlistRoutes = require('./routes/setlist.routes')(app)
+// const authRoutes = require('./routes/auth.routes.js')
+// app.use('/api', cors(), authRoutes)
 
 app.use(express.static('public'))
+
+const encodeFormData = (data) => {
+  return Object.keys(data)
+    .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+    .join('&')
+}
+
+function generateRandomString(length) {
+  var text = ''
+  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+
+  for (var i = 0; i < length; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length))
+  }
+  return text
+}
+
+app.get('/login', function(req, res) {
+  const scope = `user-modify-playback-state
+                 user-read-playback-state
+                 user-read-currently-playing
+                 user-library-modify
+                 user-library-read
+                 user-top-read
+                 playlist-read-private
+                 playlist-modify-public`
+
+  res.redirect('https://accounts.spotify.com/authorize?' +
+    querystring.stringify({
+      response_type: 'token',
+      client_id: config.CLIENT_ID,
+      scope: scope,
+      redirect_uri: config.REDIRECTURI,
+      show_dialog: true
+    }))
+})
+
+app.get('/callback', async function(req, res) {
+  const body = {
+    grant_type: 'authorization_code',
+    code: req.query.code,
+    redirect_uri: config.REDIRECTURI,
+    client_id: config.CLIENT_ID,
+    client_secret: config.CLIENT_SECRET,
+  }
+
+  await fetch('https://accounts.spotify.com/api/token', {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Accept": "application/json"
+    },
+    body: encodeFormData(body)
+  })
+  .then(response => response.json())
+  .then(data => {
+    const query = querystring.stringify(data)
+    res.redirect(`${config.CLIENT_REDIRECTURI}?${query}`)
+  })
+})
 
 async function getSetlist(date, city, artist) {
   let isValidJSON = true
