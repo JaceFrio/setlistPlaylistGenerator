@@ -15,6 +15,7 @@
   let access_token = params.access_token
   let refresh_token = params.refresh_token
 
+  // TODO: Add token caching for access_token and refresh_token
   if (access_token) {
     $.ajax({
         url: 'https://api.spotify.com/v1/me',
