@@ -1,8 +1,7 @@
-$(document).ready(() => {
-  //FIXME: Not working
+(function() {
   function getHashParams() {
-    var hashParams = {}
-    var e, r = /([^&;=]+)=?([^&;]*)/g,
+    let hashParams = {}
+    let e, r = /([^&;=]+)=?([^&;]*)/g,
         q = window.location.hash.substring(1)
     while ( e = r.exec(q)) {
         hashParams[e[1]] = decodeURIComponent(e[2])
@@ -10,9 +9,11 @@ $(document).ready(() => {
     return hashParams
   }
 
-  var params = getHashParams()
+  let params = getHashParams()
+  console.log(params)
 
-  var access_token = params.access_token || localStorage.getItem('access_token')
+  let access_token = params.access_token
+  let refresh_token = params.refresh_token
 
   if (access_token) {
     $.ajax({
@@ -23,21 +24,27 @@ $(document).ready(() => {
         success: function(response) {
           console.log(response)
           $('.welcomeUser').text(`Welcome ${response.display_name}!`)
-          localStorage.setItem('access_token', access_token)
           $('#spotifyLoginBtn').text('LOG IN TO ANOTHER SPOTIFY ACCOUNT')
         },
-        error: function(err) {
+        error: (err) => {
           console.log(err)
-          console.log('need to set up refresh_token code')
-          //FIXME: Test later when playlist creation in implemented
-          // refresh the acceess token (bottom of page) - https://developer.spotify.com/documentation/web-api/tutorials/code-pkce-flow
+          $.ajax({
+            url: '/refresh_token',
+            data: {
+              'refresh_token': refresh_token
+            }
+          }).done(function(data) {
+            access_token = data.access_token;
+          })
         }
     })
   } 
   else {
     $('#spotifyLoginBtn').text('LOG IN TO SPOTIFY ACCOUNT')
   }
+})()
 
+$(document).ready(() => {
   $('.spotifyLoginBtn').click( async () => {
     window.location = 'http://localhost:8080/login'
   })
@@ -84,3 +91,20 @@ $(document).ready(() => {
     $('#companyFactsBtn').html('Submit')
   })
 })
+
+////////////////////////////////////////////////////////////////////////////////
+
+// console.log('need to set up refresh_token code')
+// $.ajax({
+//   url: `http://localhost:8080/refresh_token?refresh_token=${refresh_token}`,
+//   method: 'GET',
+//   success: (response) => {
+//     console.log(response)
+//     $('.welcomeUser').text(`Welcome ${response.display_name}!`)
+//     localStorage.setItem('access_token', access_token)
+//     $('#spotifyLoginBtn').text('LOG IN TO ANOTHER SPOTIFY ACCOUNT')
+//   },
+//   error: (err) => {
+//     console.log(err)
+//   }
+// })
