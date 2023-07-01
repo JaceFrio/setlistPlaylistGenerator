@@ -1,3 +1,7 @@
+let access_token
+let refresh_token
+let userData
+
 (function() {
   function getHashParams() {
     let hashParams = {}
@@ -12,8 +16,8 @@
   let params = getHashParams()
   console.log(params)
 
-  let access_token = params.access_token
-  let refresh_token = params.refresh_token
+  access_token = params.access_token
+  refresh_token = params.refresh_token
 
   // TODO: Add token caching for access_token and refresh_token
   if (access_token) {
@@ -24,6 +28,7 @@
         },
         success: function(response) {
           console.log(response)
+          userData = response
           $('.welcomeUser').text(`Welcome ${response.display_name}!`)
           $('#spotifyLoginBtn').text('LOG IN TO ANOTHER SPOTIFY ACCOUNT')
         },
@@ -35,7 +40,7 @@
               'refresh_token': refresh_token
             }
           }).done(function(data) {
-            access_token = data.access_token;
+            access_token = data.access_token
           })
         }
     })
@@ -67,22 +72,12 @@ $(document).ready(() => {
     //TODO: Add validation and sanitization function before GET request
 
     $.ajax({
-      url: `http://localhost:8080/setlistInfo/${date}/${city}/${artist}`,
+      url: `http://localhost:8080/setlistInfo/${date}/${city}/${artist}/${access_token}/${userData.id}`,
       method: 'GET',
       success: (response) => {
         $('#setlistInputBtn').prop("disabled", false)
-        $('#setlistInputBtn').html('GENERATE PLAYLIST')  
-        if (response['data'][0] == 'error') {
-          // popup saying CIK is bad
-          console.log(`No setlist found for ${date} ${city} ${artist}`)
-        }
-        else if (response['data'][0] == 'OK') {
-          //TODO: Start playing ad
-          //TODO: Display setlist after ad ends.
-        }
-        else {
-          console.log(response)
-        }
+        $('#setlistInputBtn').html('GENERATE ANOTHER PLAYLIST')  
+        console.log(response[0])
       },
       error: (response) => {
         console.log(response)
