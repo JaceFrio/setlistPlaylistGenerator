@@ -88,9 +88,7 @@ $(document).ready(() => {
     let city = $('#cityInput').val()
     let artist = $('#artistInput').val()
 
-    //TODO: Add validation and sanitization function before GET request also disable 
-    // the "Generate Playlist" button until logged into Spotify and form is filled.
-
+    //TODO: Add sanitization function before GET request
     $.ajax({
       url: `http://localhost:8080/setlistInfo/${date}/${city}/${artist}/${access_token}/${userData.id}`,
       method: 'GET',

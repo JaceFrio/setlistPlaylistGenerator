@@ -92,7 +92,7 @@ async function createPlaylist(setlist, playlistName, access_token, user) {
     let playlistUrl = playlistData["external_urls"]["spotify"]
 
     for (let song of setlist[1].setlistSongs) {
-      let url = `https://api.spotify.com/v1/search?q=remaster%2520track:${encodeURI(song.name)}%2520artist:${encodeURI(setlist[1].artistName)}&type=track&limit=10&offset=0`
+      let url = `https://api.spotify.com/v1/search?q=remaster%2520track:${encodeURI(song.name)}%2520artist:${encodeURI(setlist[1].artistName)}&type=track&limit=50&offset=0`
       let songResponse = await fetch(url, {
         method: 'GET',
         headers: {
@@ -105,15 +105,25 @@ async function createPlaylist(setlist, playlistName, access_token, user) {
       let songData = await songResponse.json()
 
       try {
-      //NOTE: Trying using Levenshtein Distance to calculate similarity
-      //TODO: Skip songs that don't match the artist like covers or wrong matches.
+        //NOTE: Trying using Levenshtein Distance to calculate similarity
+        //FIXME: White Trash Millionaire by Mom Jeans. doesn't show up within 50 tracks.
+        //TODO: write function that retrieves second page of 50 tracks if score < .50 
         let songId = ''
         let simScore = 0
+        console.log('')  //TEST:
+        console.log(`${song.name} by ${setlist[1].artistName}`)  //TEST:
         for (let trackItem of songData.tracks.items) {
-          let newSimScore = similarity(song.name, trackItem.name)
-          if (newSimScore > simScore) {
-            simScore = newSimScore
-            songId = trackItem.id
+          let newSimScore = similarity(song.name.replaceAll(' ', ''), trackItem.name.replaceAll(' ', ''))
+          console.log(`${trackItem.name} - ${trackItem.artists[0].name}`)  //TEST:
+          if (trackItem.artists[0].name.toLowerCase() == setlist[1].artistName.toLowerCase()) {
+            if (newSimScore > simScore) {
+              console.log(`songName: ${trackItem.name}, newScore: ${newSimScore} > highestScore: ${simScore}`)
+              simScore = newSimScore
+              songId = trackItem.id
+            }
+          }
+          if (simScore == 1) {
+            break
           }
         }
         if (songId == '') {
