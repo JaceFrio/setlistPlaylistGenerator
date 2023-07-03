@@ -3,6 +3,47 @@ const router = express.Router()
 
 module.exports = router
 
+function similarity(s1, s2) {
+  var longer = s1;
+  var shorter = s2;
+  if (s1.length < s2.length) {
+    longer = s2;
+    shorter = s1;
+  }
+  var longerLength = longer.length;
+  if (longerLength == 0) {
+    return 1.0;
+  }
+  return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
+}
+
+function editDistance(s1, s2) {
+  s1 = s1.toLowerCase();
+  s2 = s2.toLowerCase();
+
+  var costs = new Array();
+  for (var i = 0; i <= s1.length; i++) {
+    var lastValue = i;
+    for (var j = 0; j <= s2.length; j++) {
+      if (i == 0)
+        costs[j] = j;
+      else {
+        if (j > 0) {
+          var newValue = costs[j - 1];
+          if (s1.charAt(i - 1) != s2.charAt(j - 1))
+            newValue = Math.min(Math.min(newValue, lastValue),
+              costs[j]) + 1;
+          costs[j - 1] = lastValue;
+          lastValue = newValue;
+        }
+      }
+    }
+    if (i > 0)
+      costs[s2.length] = lastValue;
+  }
+  return costs[s2.length];
+}
+
 async function getSetlist(date, city, artist) {
 	let isValidJSON = true
 	let setlistJSON
@@ -64,13 +105,26 @@ async function createPlaylist(setlist, playlistName, access_token, user) {
       let songData = await songResponse.json()
 
       try {
-      //FIXME: Need to compare using better method
-      let songId = ''
-      for (let trackItem of songData.tracks.items) {
-        if (trackItem.name.includes(song.name) && trackItem.artists[0].name.includes(setlist[1].artistName)) {
-          songId = trackItem.id
+      // let songId = ''
+      // for (let trackItem of songData.tracks.items) {
+      //   if (trackItem.name.includes(song.name) && trackItem.artists[0].name.includes(setlist[1].artistName)) {
+      //     songId = trackItem.id
+      //   }
+      // }
+      //   if (songId == '') {
+      //     songId = songData.tracks.items[0].id
+      //   }
+
+      //NOTE: Trying using Levenshtein Distance to calculate similarity
+        let songId = ''
+        let simScore = 0
+        for (let trackItem of songData.tracks.items) {
+          let newSimScore = similarity(song.name, trackItem.name)
+          if (newSimScore > simScore) {
+            simScore = newSimScore
+            songId = trackItem.id
+          }
         }
-      }
         if (songId == '') {
           songId = songData.tracks.items[0].id
         }
