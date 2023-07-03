@@ -1,4 +1,4 @@
-let access_token
+let access_token = null
 let refresh_token
 let userData
 
@@ -14,8 +14,6 @@ let userData
   }
 
   let params = getHashParams()
-  console.log(params)
-
   access_token = params.access_token
   refresh_token = params.refresh_token
 
@@ -27,7 +25,6 @@ let userData
           'Authorization': 'Bearer ' + access_token
         },
         success: function(response) {
-          console.log(response)
           userData = response
           $('.welcomeUser').text(`Welcome ${response.display_name}!`)
           $('#spotifyLoginBtn').text('LOG IN TO ANOTHER SPOTIFY ACCOUNT')
@@ -52,6 +49,9 @@ let userData
 
 function enableGeneratePlaylistBtn() {
   let btnEnabled = true
+  if (access_token == null) {
+    btnEnabled = false
+  }
   if ($('#artistInput').val() == '') {
     btnEnabled = false
   }
@@ -97,7 +97,6 @@ $(document).ready(() => {
       success: (response) => {
         $('#setlistInputBtn').prop("disabled", false)
         $('#setlistInputBtn').html('GENERATE ANOTHER PLAYLIST')  
-        console.log(response[0])
       },
       error: (response) => {
         console.log(response)
