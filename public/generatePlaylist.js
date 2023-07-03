@@ -50,6 +50,25 @@ let userData
   }
 })()
 
+function enableGeneratePlaylistBtn() {
+  let btnEnabled = true
+  if ($('#artistInput').val() == '') {
+    btnEnabled = false
+  }
+  if ($('#cityInput').val() == '') {
+    btnEnabled = false
+  }
+  if ($('#yearInput').val() == '') {
+    btnEnabled = false
+  }
+  if (btnEnabled) {
+    $("#setlistInputBtn").attr("disabled", false)
+  }
+  else {
+    $("#setlistInputBtn").attr("disabled", true)
+  }
+}
+
 $(document).ready(() => {
   $('.spotifyLoginBtn').click( async () => {
     window.location = 'http://localhost:8080/login'
@@ -86,6 +105,16 @@ $(document).ready(() => {
     })
     $('#companyFactsBtn').prop("disabled", false)
     $('#companyFactsBtn').html('Submit')
+  })
+
+  $('#yearInput').keyup(() => {
+    enableGeneratePlaylistBtn()
+  })
+  $('#cityInput').keyup(() => {
+    enableGeneratePlaylistBtn()
+  })
+  $('#artistInput').keyup(() => {
+    enableGeneratePlaylistBtn()
   })
 })
 

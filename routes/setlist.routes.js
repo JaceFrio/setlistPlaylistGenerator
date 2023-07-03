@@ -105,17 +105,8 @@ async function createPlaylist(setlist, playlistName, access_token, user) {
       let songData = await songResponse.json()
 
       try {
-      // let songId = ''
-      // for (let trackItem of songData.tracks.items) {
-      //   if (trackItem.name.includes(song.name) && trackItem.artists[0].name.includes(setlist[1].artistName)) {
-      //     songId = trackItem.id
-      //   }
-      // }
-      //   if (songId == '') {
-      //     songId = songData.tracks.items[0].id
-      //   }
-
       //NOTE: Trying using Levenshtein Distance to calculate similarity
+      //TODO: Skip songs that don't match the artist like covers or wrong matches.
         let songId = ''
         let simScore = 0
         for (let trackItem of songData.tracks.items) {

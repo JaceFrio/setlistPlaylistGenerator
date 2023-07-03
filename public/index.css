@@ -134,9 +134,17 @@ nav > div > button:active {
 .submitSetlistInput {
   margin-top: 50px;
 }
+.submitSetlistInput:disabled {
+  opacity: .5;
+  cursor: default;
+  pointer-events: none;
+}
 input:hover {
   cursor: text;
 }
 select:hover {
   cursor: pointer;
+}
+body > div.mainContent.container > div > div:nth-child(1) > ul > li {
+  font-size: 20px;
 }
