@@ -148,3 +148,27 @@ select:hover {
 body > div.mainContent.container > div > div:nth-child(1) > ul > li {
   font-size: 20px;
 }
+.playlistCreatedInfo {
+  background-color: #1DB954;
+  height: 200px;
+  margin-bottom: 60px;
+  text-align: center;
+  padding-top: 40px;
+  transition: 5s;
+}
+
+.playlistCreatedInfo > a:link {
+  color: white !important;
+}
+
+.playlistCreatedInfo > a:visited {
+  color: white !important;
+}
+
+.playlistCreatedInfo > a:hover {
+  color: white !important;
+  opacity: .75;
+}
+.playlistCreatedInfo > a:active {
+  color: white !important;
+}

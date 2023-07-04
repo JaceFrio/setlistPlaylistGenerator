@@ -77,6 +77,7 @@ $(document).ready(() => {
   $('#setlistInfo').submit((event) => {
     event.preventDefault()
     $('#setlistInputBtn').prop("disabled", true)
+    $('.playlistCreatedInfo').hide()
     $('#setlistInputBtn').html(
       `
       <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -94,7 +95,15 @@ $(document).ready(() => {
       method: 'GET',
       success: (response) => {
         $('#setlistInputBtn').prop("disabled", false)
-        $('#setlistInputBtn').html('GENERATE ANOTHER PLAYLIST')  
+        $('#setlistInputBtn').html('GENERATE ANOTHER PLAYLIST')
+        // TODO: add popup that notifies the user that the playlist was created and
+        // includes a link to the playlist, maybe iframe preview?
+        if (response[0] == 'playlist created') {
+          $('.playlistName').text(response[2])
+          $('.playlistLink').attr('href', response[1])
+          $('.playlistCreatedInfo').show()
+          $('.playlistCreatedInfo').get(0).scrollIntoView({behavior: 'smooth'})
+        }
       },
       error: (response) => {
         console.log(response)

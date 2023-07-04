@@ -164,6 +164,7 @@ router.get(`/setlistInfo/:date/:city/:artist/:access_token/:user`, async (req, r
 	
   let setlist = await getSetlist(date, city, artist)
   let message = await createPlaylist(setlist, playlistName, access_token, user)
+  message[2] = playlistName
 
 	res.send(message)
 })
